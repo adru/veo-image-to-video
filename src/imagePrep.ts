@@ -58,7 +58,8 @@ export async function prepareImage(input: Buffer, options: PrepOptions): Promise
     pipeline = sharp(background).composite([{ input: foreground, gravity: 'centre' }]);
   }
 
-  const encoded = format === 'png' ? pipeline.png() : pipeline.jpeg({ quality: 92 });
+  const flat = pipeline.removeAlpha();
+  const encoded = format === 'png' ? flat.png() : flat.jpeg({ quality: 92 });
   const { data, info } = await encoded.toBuffer({ resolveWithObject: true });
   return {
     bytes: data,
